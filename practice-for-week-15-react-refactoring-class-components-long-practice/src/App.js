@@ -33,7 +33,7 @@ function App(props) {
       <Folder folders={folders} />
       <Weather />
       <ClockToggle toggleClock={toggleClock} />
-        {showClock && <Clock />}
+      {showClock && <Clock />}
       <AutoComplete names={names} />
     </div>
   );

@@ -1,24 +1,85 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { toQueryString } from '../utils';
 
-class Weather extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        weather: null
-      };
-    }
+const Weather = () => {
+    const [weather, setWeather] = useState(null);
     
-    componentDidMount() {
+    useEffect(() => {
+      const pollWeather = async (location) => {
+        try {
+          let url = 'http://api.openweathermap.org/data/2.5/weather?';
+          const apiKey = process.env.REACT_APP_WEATHER_API; 
+          const params = {
+            lat: location.coords.latitude,
+            lon: location.coords.longitude,
+            appid: apiKey
+          }
+          url += toQueryString(params);
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            setWeather(data);
+          } else {
+            throw res 
+          }
+        } catch {
+          alert("Check Weather API key!")
+        }
+      }
       navigator.geolocation.getCurrentPosition(
-        this.pollWeather,
+        pollWeather,
         (err) => console.log(err),
         { timeout: 10000 }
+      )
+    }, [])
+    
+    let content = <div className='loading'>loading weather...</div>;
+    
+    if (weather) {
+      console.log(weather)
+      const temp = (weather.main.temp - 273.15) * 1.8 + 32;
+      content = (
+        <div>
+          <p>{weather.name}</p>
+          <p>{temp.toFixed(1)} degrees</p>
+        </div>
       );
     }
 
-    pollWeather = async (location) => {
-      let url = 'http://api.openweathermap.org/data/2.5/weather?';
+  return (
+        <section className="weather-section">
+          <h1>Weather</h1>
+          <div className='weather'>
+
+            {content}
+          </div>
+        </section>
+  )
+    
+}
+
+  
+
+
+export default Weather;
+
+
+// constructor(props) {
+    //   super(props);
+    //   this.state = {
+    //     weather: null
+    //   };
+    // }
+// componentDidMount() {
+    //   navigator.geolocation.getCurrentPosition(
+        // this.pollWeather,
+        // (err) => console.log(err),
+        // { timeout: 10000 }
+    //   );
+    // }
+    // console.log(navigator)
+    //pollWeather = async (location) => {
+      // let url = 'http://api.openweathermap.org/data/2.5/weather?';
 
       /* Remember that it's unsafe to expose your API key. (Note that pushing
       files that include your key to Github will expose your key!) In
@@ -29,49 +90,38 @@ class Weather extends React.Component {
       "process.env.<variable_name>". Make sure to .gitignore your .env file!
       Also remember to restart your server (i.e., re-run "npm start") whenever
       you change your .env file. */
-      const apiKey = '???';
+      // const apiKey = 'b65b43cc09af164f099fe5a807d56972' //process.env.REACT_APP_WEATHER_API; //remove api key 
 
-      const params = {
-        lat: location.coords.latitude,
-        lon: location.coords.longitude,
-        appid: apiKey
-      };
+      // const params = {
+      //   lat: location.coords.latitude,
+      //   lon: location.coords.longitude,
+      //   appid: apiKey
+      // };
       
-      url += toQueryString(params);
+      // url += toQueryString(params);
 
-      const res = await fetch(url);
-      if (res.ok) {
-        const weather = await res.json();
-        this.setState({ weather });
-      }
-      else {
-        alert ("Check Weather API key!")
-      }
-    }
+    //   const res = await fetch(url);
+    //   if (res.ok) {
+    //     const weather = await res.json();
+    //     this.setState({ weather });
+    //   }
+    //   else {
+    //     alert ("Check Weather API key!")
+    //   }
+    // }
 
-  render() {
-    const weather = this.state.weather;
-    let content = <div className='loading'>loading weather...</div>;
-    
-    if (weather) {
-      const temp = (weather.main.temp - 273.15) * 1.8 + 32;
-      content = (
-        <div>
-          <p>{weather.name}</p>
-          <p>{temp.toFixed(1)} degrees</p>
-        </div>
-      );
-    }
+    // const content = () => {
+    //   if (weather) {
+    //     const temp = (weather.main.temp - 273.15) * 1.8 + 32;
+    //       return (
+    //         <div>
+    //           <p>{weather.name}</p>
+    //           <p>{temp.toFixed(1)} degrees</p>
+    //         </div>
+    //       )
+    //   } else {
+    //     return (<div className='loading'>loading weather...</div>)
+    //   }
+    // }
 
-    return (
-      <section className="weather-section">
-        <h1>Weather</h1>
-        <div className='weather'>
-          {content}
-        </div>
-      </section>
-    );
-  }
-}
-
-export default Weather;
+    //const weather = this.state.weather;
