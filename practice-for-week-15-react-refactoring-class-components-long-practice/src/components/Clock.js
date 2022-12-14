@@ -17,17 +17,9 @@ export const ClockToggle = (props)=> {
 // } 
 
 const Clock = (props) => {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     time: new Date(),
-  //   };
-  // }
+
   const [time, setTime] = useState(new Date())
   
-  // componentDidMount() {
-  //   this.interval = setInterval(this.tick, 1000);
-  // }
   const tick = () => {
     setTime(new Date());
   }
@@ -40,14 +32,8 @@ const Clock = (props) => {
       clearInterval(interval);
     }
   })
-  
-  // componentWillUnmount() {
-  //   console.log("Clearing Clock interval!")
-  //   clearInterval(this.interval);
-  // }
-  
 
-  // render() {
+
     let hours = time.getHours();
     let minutes = time.getMinutes();
     let seconds = time.getSeconds();
@@ -83,7 +69,7 @@ const Clock = (props) => {
         </div>
       </section>
     );
-  }
-// }
+}
+
 
 export default Clock;
